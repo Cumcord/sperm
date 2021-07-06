@@ -34,3 +34,9 @@ sperm uses [Rollup](https://rollupjs.org/) and [Babel](https://babeljs.io/) to d
 - .es6
 - .es
 - .mjs
+
+# Contributing
+
+You can submit patches and development ideas on our [development mailing list](https://lists.sr.ht/~creatable/cumcord-devel).  
+You can talk about Cumcord on our [discussion mailing list](https://lists.sr.ht/~creatable/cumcord-discuss).  
+Announcements can be found on our [announcements mailing list](https://lists.sr.ht/~creatable/cumcord-announce).
