@@ -53,6 +53,7 @@ module.exports = async function buildPlugin(
   await fs.access(outDir).catch(() => fs.mkdir(outDir));
 
   await bundle.write({
+    name: "CumcordPlugin",
     file: path.join(outDir, "plugin.js"),
     format: "iife",
     compact: true,
@@ -60,7 +61,6 @@ module.exports = async function buildPlugin(
       terser({
         mangle: true,
         compress: true,
-        toplevel: true,
         keep_classnames: false,
       }),
     ],
