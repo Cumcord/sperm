@@ -37,6 +37,7 @@ module.exports = async function buildPlugin(
 
   const bundle = await rollup.rollup({
     input: manifestJson.file,
+    onwarn: () => {},
     plugins: [
       nodeResolve(),
 
@@ -53,15 +54,16 @@ module.exports = async function buildPlugin(
   await fs.access(outDir).catch(() => fs.mkdir(outDir));
 
   await bundle.write({
-    name: "CumcordPlugin",
     file: path.join(outDir, "plugin.js"),
     format: "iife",
     compact: true,
     plugins: [
       terser({
         mangle: true,
-        compress: true,
-        keep_classnames: false,
+        compress: {
+          side_effects: false,
+          negate_iife: false,
+        },
       }),
     ],
   });
