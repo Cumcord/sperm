@@ -9,6 +9,9 @@ const babel = require("@rollup/plugin-babel").babel;
 const terser = require("rollup-plugin-terser").terser;
 const alias = require("@rollup/plugin-alias");
 
+// Babel is whiny and doesn't like using presets that aren't inside of the plugin's node_modules directory.
+const babel_preset_react = require("@babel/preset-react");
+
 const modPrefix = "@cumcord";
 const aliases = [
   {
@@ -41,7 +44,7 @@ module.exports = async function buildPlugin(
 
       babel({
         babelHelpers: "bundled",
-        presets: [["@babel/preset-react"]],
+        presets: [babel_preset_react],
       }),
     ],
   });

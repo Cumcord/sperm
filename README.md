@@ -1,5 +1,7 @@
 # sperm
 
+![Discord Shield](https://discordapp.com/api/guilds/824921608560181258/widget.png?style=shield)
+
 sperm is a Discord plugin builder that makes plugins that work with every Discord client mod through [Cumcord](https://github.com/Cumcord/Cumcord).
 
 # Installation
