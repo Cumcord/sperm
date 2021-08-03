@@ -8,6 +8,7 @@ const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const babel = require("@rollup/plugin-babel").babel;
 const terser = require("rollup-plugin-terser").terser;
 const alias = require("@rollup/plugin-alias");
+const objectExists = require("rollup-plugin-object-exists");
 
 // Babel is whiny and doesn't like using presets that aren't inside of the plugin's node_modules directory.
 const babel_preset_react = require("@babel/preset-react");
@@ -46,6 +47,10 @@ module.exports = async function buildPlugin(
       babel({
         babelHelpers: "bundled",
         presets: [babel_preset_react],
+      }),
+
+      objectExists(["BdApi", "ZeresPluginLibrary", "BDFDB_Global", "powercord"], (modApis) => {
+        throw new Error(`Using client mod / library specific APIs (${modApis.join(", ")}) goes against Cumcord's core philosophy of making plugins that work everywhere.`)
       }),
     ],
   });
