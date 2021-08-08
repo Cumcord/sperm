@@ -49,7 +49,7 @@ module.exports = async function buildPlugin(
         presets: [babel_preset_react],
       }),
 
-      objectExists(["BdApi", "ZeresPluginLibrary", "BDFDB_Global", "powercord"], (modApis) => {
+      objectExists(["BdApi", "ZeresPluginLibrary", "BDFDB_Global", "powercord", "XenoLib", "$vz"], (modApis) => {
         throw new Error(`Using client mod / library specific APIs (${modApis.join(", ")}) goes against Cumcord's core philosophy of making plugins that work everywhere.`)
       }),
     ],
