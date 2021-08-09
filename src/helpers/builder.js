@@ -50,7 +50,9 @@ module.exports = async function buildPlugin(
       }),
 
       objectExists(["BdApi", "ZeresPluginLibrary", "BDFDB_Global", "powercord", "XenoLib", "$vz"], (modApis) => {
-        throw new Error(`Using client mod / library specific APIs (${modApis.join(", ")}) goes against Cumcord's core philosophy of making plugins that work everywhere.`)
+        if (modApis.length > 0) {
+          throw new Error(`Using client mod / library specific APIs (${modApis.join(", ")}) goes against Cumcord's core philosophy of making plugins that work everywhere.`)
+        }
       }),
     ],
   });
