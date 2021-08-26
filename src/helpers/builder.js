@@ -8,7 +8,6 @@ const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const commonjs = require("@rollup/plugin-commonjs");
 const babel = require("@rollup/plugin-babel").babel;
 const terser = require("rollup-plugin-terser").terser;
-const alias = require("@rollup/plugin-alias");
 const objectExists = require("rollup-plugin-object-exists");
 
 // Babel is whiny and doesn't like using presets that aren't inside of the plugin's node_modules directory.
