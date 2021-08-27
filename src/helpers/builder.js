@@ -42,7 +42,7 @@ module.exports = async function buildPlugin(
     onwarn: () => { },
     external: (importpath) => {
       if (importpath.startsWith("@cumcord")) {
-        importObj[importpath] = ("cumcord" + importpath.split("@cumcord")[1].replace("/", "."));
+        importObj[importpath] = ("cumcord" + importpath.split("@cumcord")[1].replaceAll("/", "."));
       }
     },
     plugins: [
