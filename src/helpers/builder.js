@@ -37,10 +37,10 @@ module.exports = async function buildPlugin(
         return {
           name: "add-react",
           transform(code, id) {
-            if (id.endsWith(".jsx")) {
+            if (id.endsWith(".jsx") || id.endsWith(".tsx")) {
               return {
-                code: `import React from "@cumcord/modules/common"
-                ${code}`,
+                code: `import { React } from "@cumcord/modules/common";
+${code}`,
                 map: { mappings: "" }
               };
             }
