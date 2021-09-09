@@ -1,6 +1,6 @@
 {
   "name": "sperm",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A CLI helper for Cumcord.",
   "main": "src/index.js",
   "repository": "https://hg.sr.ht/~creatable/sperm",
@@ -10,14 +10,13 @@
   "bin": "./src/index.js",
   "dependencies": {
     "@babel/core": "^7.15.0",
-    "@babel/preset-react": "^7.14.5",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "inquirer": "^8.1.2",
     "rollup": "^2.56.3",
-    "rollup-plugin-object-exists": "^1.0.4",
-    "rollup-plugin-terser": "^7.0.2",
     "yargs": "^17.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.26",
+    "rollup-plugin-esbuild": "^4.5.0"
   }
 }

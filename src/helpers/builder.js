@@ -4,22 +4,8 @@ const path = require("path");
 const crypto = require("crypto");
 
 // rollup plugins
+const esbuild = require("rollup-plugin-esbuild");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
-const commonjs = require("@rollup/plugin-commonjs");
-const babel = require("@rollup/plugin-babel").babel;
-const terser = require("rollup-plugin-terser").terser;
-const objectExists = require("rollup-plugin-object-exists");
-
-// Babel is whiny and doesn't like using presets that aren't inside of the plugin's node_modules directory.
-const babel_preset_react = require("@babel/preset-react");
-
-//const modPrefix = "@cumcord";
-/*const aliases = [
-  {
-    find: `${modPrefix}`,
-    replacement: path.join(__dirname, "../bindings/base"),
-  },
-];*/
 
 module.exports = async function buildPlugin(
   manifest = "cumcord_manifest.json",
@@ -47,19 +33,23 @@ module.exports = async function buildPlugin(
     },
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs({ transformMixedEsModules: true }),
-
-      babel({
-        babelHelpers: "bundled",
-        presets: [babel_preset_react],
-        exclude: 'node_modules/**',
-      }),
-
-      /*objectExists(["BdApi", "ZeresPluginLibrary", "BDFDB_Global", "powercord", "XenoLib", "$vz", "require"], (modApis) => {
-        if (modApis.length > 0) {
-          throw new Error(`Using client mod / NodeJS / library specific APIs (${modApis.join(", ")}) goes against Cumcord's core philosophy of making plugins that work everywhere.`)
-        }
-      }),*/
+      (() => {
+        return {
+          name: "add-react",
+          transform(code, id) {
+            if (id.endsWith(".jsx")) {
+              return {
+                code: `import React from "@cumcord/modules/common"
+                ${code}`,
+                map: { mappings: "" }
+              };
+            }
+          }
+        };
+      })(),
+      esbuild({
+        minify: true,
+      })
     ],
   });
   // check if outDir exists with fs.promises and if not create it
@@ -70,15 +60,6 @@ module.exports = async function buildPlugin(
     format: "iife",
     compact: true,
     globals: importObj,
-    plugins: [
-      terser({
-        mangle: true,
-        compress: {
-          side_effects: false,
-          negate_iife: false,
-        },
-      }),
-    ],
   });
 
   await bundle.close();
