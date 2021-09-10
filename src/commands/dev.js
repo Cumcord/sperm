@@ -7,7 +7,7 @@ const path = require("path");
 
 // a function that finds an open websocket port using a port range
 async function findPort(start, increment) {
-  let port = start;
+  let port = start -1;
   let promiseList = [];
   while (port < start + increment) {
     port += 1;
