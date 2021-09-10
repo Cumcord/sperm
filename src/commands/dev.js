@@ -76,7 +76,7 @@ async function dev(args) {
       return;
     }
     
-    console.log(chalk`{green [GREEN]} {white Sending plugin to client...}`);
+    console.log(chalk`{green [SEND]} {white Sending plugin to client...}`);
     client.send(JSON.stringify({
       action: "INSTALL_PLUGIN_DEV",
       code: data[0].code
