@@ -1,6 +1,6 @@
 {
   "name": "sperm",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A CLI helper for Cumcord.",
   "main": "src/index.js",
   "repository": "https://hg.sr.ht/~creatable/sperm",
@@ -9,13 +9,10 @@
   "private": false,
   "bin": "./src/index.js",
   "dependencies": {
-    "@babel/core": "^7.15.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "inquirer": "^8.1.2",
     "rollup": "^2.56.3",
-    "yargs": "^17.1.1"
-  },
-  "devDependencies": {
+    "yargs": "^17.1.1",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "esbuild": "^0.12.26",
