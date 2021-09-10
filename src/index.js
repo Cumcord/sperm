@@ -6,6 +6,7 @@ const inquirer = require("inquirer");
 // require commands
 const init = require("./commands/init");
 const build = require("./commands/build");
+const dev = require("./commands/dev");
 
 const argumentParser = yargs
   .scriptName("sperm")
@@ -90,6 +91,25 @@ argumentParser.command(
     });
   },
   build
+);
+
+argumentParser.command(
+  "dev [manifest]",
+  "Hot-rebuilds your plugin and sends it to the client",
+  (yargs) => {
+    yargs.positional("manifest", {
+      type: "string",
+      default: "cumcord_manifest.json",
+      describe: "a cumcord manifest file",
+    });
+    yargs.option("p", {
+      alias: "port",
+      type: "number",
+      default: 6463,
+      describe: "the port to connect to"
+    });
+  },
+  dev
 );
 
 argumentParser.argv;

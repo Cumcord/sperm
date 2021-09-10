@@ -1,30 +1,21 @@
 const fs = require("fs").promises;
 const rollup = require("rollup");
 const path = require("path");
-const crypto = require("crypto");
 
 // rollup plugins
 const esbuild = require("rollup-plugin-esbuild");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 
 module.exports = async function buildPlugin(
-  manifest = "cumcord_manifest.json",
-  outDir = "dist"
+  inputFile = "cumcord_manifest.json",
 ) {
-  await fs.access(manifest).catch(() => {
-    throw new Error(`${manifest} does not exist`);
+  await fs.access(inputFile).catch(() => {
+    throw new Error(`${inputFile} does not exist`);
   });
-
-  let manifestJson;
-  try {
-    manifestJson = JSON.parse(await fs.readFile(manifest, "utf8"));
-  } catch {
-    throw new Error(`${manifest} is not valid json`);
-  }
 
   let importObj = {};
   const bundle = await rollup.rollup({
-    input: manifestJson.file,
+    input: inputFile,
     onwarn: () => { },
     external: (importpath) => {
       if (importpath.startsWith("@cumcord")) {
@@ -52,30 +43,29 @@ ${code}`,
       })
     ],
   });
-  // check if outDir exists with fs.promises and if not create it
-  await fs.access(outDir).catch(() => fs.mkdir(outDir));
 
-  await bundle.write({
-    file: path.join(outDir, "plugin.js"),
+  let outputOptions = {
     format: "iife",
     compact: true,
     globals: importObj,
-  });
+  }
 
-  await bundle.close();
+  return {
+    async write(outDir) {
+      await bundle.write({
+        ...outputOptions,
+        file: path.join(outDir, "plugin.js"),
+      });
 
-  let manifestCopy = manifestJson;
-  delete manifestCopy.file;
+      await bundle.close();
+    },
 
-  // get sha265 hash of plugin.js file
-  manifestCopy.hash = await fs
-    .readFile(path.join(outDir, "plugin.js"), "utf8")
-    .then((data) => {
-      return crypto.createHash("sha256").update(data).digest("hex");
-    });
-
-  await fs.writeFile(
-    path.join(outDir, "plugin.json"),
-    JSON.stringify(manifestCopy)
-  );
+    async get() {
+      const { output } = await bundle.generate(outputOptions);
+      await bundle.close();
+      return output;
+    },
+    
+    watchFiles: bundle.watchFiles,
+  }
 };
