@@ -40,6 +40,7 @@ ${code}`,
       })(),
       esbuild({
         minify: true,
+        target: ["es2021"]
       })
     ],
   });
