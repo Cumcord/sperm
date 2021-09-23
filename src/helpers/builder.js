@@ -21,6 +21,20 @@ module.exports = async function buildPlugin(
     external: (importpath) => {
       if (importpath.startsWith("@cumcord")) {
         importObj[importpath] = ("cumcord" + importpath.split("@cumcord")[1].replaceAll("/", "."));
+      } /* 
+        I'll be honest: every single Rollup hack I'm using makes no fucking sense whatsoever.
+        Do I care? Not really.
+        Does it matter? Probably, but I don't care.
+        Does it work? Yes.
+
+        If it works, I don't care.
+      */
+      else if (importpath == "react") {
+        importObj["react"] = "cumcord.modules.common.React";
+        return "cumcord.modules.common.React"
+      } else if (importpath == "react-dom") {
+        importObj["react-dom"] = "cumcord.modules.common.ReactDOM";
+        return "cumcord.modules.common.ReactDOM"
       }
     },
     plugins: [
