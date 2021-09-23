@@ -5,6 +5,7 @@ const path = require("path");
 // rollup plugins
 const esbuild = require("rollup-plugin-esbuild");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
+const json = require("@rollup/plugin-json");
 
 module.exports = async function buildPlugin(
   inputFile = "cumcord_manifest.json",
@@ -41,7 +42,8 @@ ${code}`,
       esbuild({
         minify: true,
         target: ["es2021"]
-      })
+      }),
+      json()
     ],
   });
 

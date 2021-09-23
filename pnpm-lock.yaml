@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@rollup/plugin-json': ^4.1.0
   '@rollup/plugin-node-resolve': ^13.0.4
   chalk: ^4.1.2
   chokidar: ^3.5.2
@@ -12,6 +13,7 @@ specifiers:
   yargs: ^17.1.1
 
 dependencies:
+  '@rollup/plugin-json': 4.1.0_rollup@2.56.3
   '@rollup/plugin-node-resolve': 13.0.4_rollup@2.56.3
   chalk: 4.1.2
   chokidar: 3.5.2
@@ -23,6 +25,15 @@ dependencies:
   yargs: 17.1.1
 
 packages:
+
+  /@rollup/plugin-json/4.1.0_rollup@2.56.3:
+    resolution: {integrity: sha512-yfLbTdNS6amI/2OpmbiBoW12vngr5NW2jCJVZSBEz+H5KfUJZ2M7sDjk0U6GOOdCWFVScShte29o9NezJ53TPw==}
+    peerDependencies:
+      rollup: ^1.20.0 || ^2.0.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.56.3
+      rollup: 2.56.3
+    dev: false
 
   /@rollup/plugin-node-resolve/13.0.4_rollup@2.56.3:
     resolution: {integrity: sha512-eYq4TFy40O8hjeDs+sIxEH/jc9lyuI2k9DM557WN6rO5OpnC2qXMBNj4IKH1oHrnAazL49C5p0tgP0/VpqJ+/w==}
