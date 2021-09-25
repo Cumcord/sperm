@@ -3,8 +3,10 @@ const rollup = require("rollup");
 const path = require("path");
 
 // rollup plugins
-const esbuild = require("rollup-plugin-esbuild");
+const esbuildPlugin = require("rollup-plugin-esbuild");
+const esbuild = require("esbuild");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
+const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
 
 module.exports = async function buildPlugin(
@@ -14,50 +16,55 @@ module.exports = async function buildPlugin(
     throw new Error(`${inputFile} does not exist`);
   });
 
-  let importObj = {};
+  let importObj = {
+    "react": "cumcord.modules.common.React",
+    "react-dom": "cumcord.modules.common.ReactDOM",
+  };
+
   const bundle = await rollup.rollup({
     input: inputFile,
     onwarn: () => { },
-    external: (importpath) => {
-      if (importpath.startsWith("@cumcord")) {
-        importObj[importpath] = ("cumcord" + importpath.split("@cumcord")[1].replaceAll("/", "."));
-      } /* 
-        I'll be honest: every single Rollup hack I'm using makes no fucking sense whatsoever.
-        Do I care? Not really.
-        Does it matter? Probably, but I don't care.
-        Does it work? Yes.
-
-        If it works, I don't care.
-      */
-      else if (importpath == "react") {
-        importObj["react"] = "cumcord.modules.common.React";
-        return "cumcord.modules.common.React"
-      } else if (importpath == "react-dom") {
-        importObj["react-dom"] = "cumcord.modules.common.ReactDOM";
-        return "cumcord.modules.common.ReactDOM"
-      }
-    },
+    external: [
+      "react",
+      "react-dom"
+    ],
     plugins: [
-      nodeResolve({ browser: true }),
       (() => {
         return {
-          name: "add-react",
-          transform(code, id) {
+          name: "cumcord-transforms",
+          async transform(code, id) {
             if (id.endsWith(".jsx") || id.endsWith(".tsx")) {
               return {
-                code: `import { React } from "@cumcord/modules/common";
-${code}`,
+                code: `${code}
+import { React } from "@cumcord/modules/common";`,
+                map: { mappings: "" }
+              };
+            } else if (id.endsWith(".css")) {
+              let minifiedCSS = (await esbuild.transform(code, {minify: true, loader: "css"})).code;
+              
+              return {
+                code: `export default () => cumcord.patcher.injectCSS(${JSON.stringify(minifiedCSS)});`,
                 map: { mappings: "" }
               };
             }
-          }
+          },
+          resolveId(source) {
+            if (source.startsWith("@cumcord")) {
+              importObj[source] = ("cumcord" + source.split("@cumcord")[1].replaceAll("/", "."));
+              return source;
+            }
+
+            return null;
+          },
         };
       })(),
-      esbuild({
+      json(),
+      nodeResolve({ browser: true }),
+      commonjs(),
+      esbuildPlugin({
         minify: true,
         target: ["es2021"]
-      }),
-      json()
+      })
     ],
   });
 
