@@ -51,7 +51,6 @@ import { React } from "@cumcord/modules/common";`,
           resolveId(source) {
             if (source.startsWith("@cumcord")) {
               importObj[source] = ("cumcord" + source.split("@cumcord")[1].replaceAll("/", "."));
-              return source;
             }
 
             return null;
