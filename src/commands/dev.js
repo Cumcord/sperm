@@ -71,8 +71,9 @@ async function dev(args) {
     let data;
     try {
       data = await (await buildPlugin(manifestJson.file)).get();
-    } catch {
+    } catch(err) {
       console.log(chalk`{red [ERROR]} {white Failed to rebuild plugin.}`);
+      console.log(chalk`{red ${err}}`)
       return;
     }
     
