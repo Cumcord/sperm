@@ -59,7 +59,10 @@ import { React } from "@cumcord/modules/common";`,
       })(),
       json(),
       nodeResolve({ browser: true }),
-      commonjs(),
+      commonjs({
+        include: "node_modules/**",
+        exclude: "!node_modules/**"
+      }),
       esbuildPlugin({
         minify: true,
         target: ["es2021"]
