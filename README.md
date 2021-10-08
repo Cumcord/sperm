@@ -29,7 +29,7 @@ Distributing built plugins can be done in 3 ways:
 
 # What is supported?
 
-sperm uses [Rollup](https://rollupjs.org/) and [Babel](https://babeljs.io/) to do the heavy-lifting and as a result your plugin may include these file types:
+sperm uses [Rollup](https://rollupjs.org/) and [esbuild](https://esbuild.github.io/) to do the heavy-lifting and as a result your plugin may include these file types:
 
 - .js (Obviously.)
 - .jsx (REQUIRES YOU IMPORT REACT FROM "@cumcord/modules/commonModules")
