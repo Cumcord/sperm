@@ -25,7 +25,7 @@ Distributing built plugins can be done in 3 ways:
 
 1. Distributing a helper plugin generated through `sperm helper`.
 2. Distributing a link to your plugin's `dist` folder and telling users to install it through Cumcord's settings UI. (example: `https://cumcord-plugin.github.io/dist/`)
-3. Distributing a link to Cumcord's "web plugin installer" for users who already have Cumcord, which will talk to Cumcord's websocket to prompt the user to install a plugin in Discord itself. (example `https://cumcord.github.io/install-plugin#https://cumcord-plugin.github.io/dist/`)
+3. Distributing a link to Cumcord's "web plugin installer" for users who already have Cumcord, which will talk to Cumcord's websocket to prompt the user to install a plugin in Discord itself. (example `https://send.cumcord.com/#https://cumcord-plugin.github.io/dist/`)
 
 # What is supported?
 
