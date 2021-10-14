@@ -10,24 +10,21 @@ const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
 
 module.exports = async function buildPlugin(
-  inputFile = "cumcord_manifest.json",
+  inputFile = "cumcord_manifest.json"
 ) {
   await fs.access(inputFile).catch(() => {
     throw new Error(`${inputFile} does not exist`);
   });
 
   let importObj = {
-    "react": "cumcord.modules.common.React",
+    react: "cumcord.modules.common.React",
     "react-dom": "cumcord.modules.common.ReactDOM",
   };
 
   const bundle = await rollup.rollup({
     input: inputFile,
-    onwarn: () => { },
-    external: [
-      "react",
-      "react-dom"
-    ],
+    onwarn: () => {},
+    external: ["react", "react-dom"],
     plugins: [
       (() => {
         return {
@@ -37,20 +34,40 @@ module.exports = async function buildPlugin(
               return {
                 code: `${code}
 import { React } from "@cumcord/modules/common";`,
-                map: { mappings: "" }
+                map: { mappings: "" },
               };
             } else if (id.endsWith(".css")) {
-              let minifiedCSS = (await esbuild.transform(code, {minify: true, loader: "css"})).code.trim();
-              
+              let minifiedCSS = (
+                await esbuild.transform(code, { minify: true, loader: "css" })
+              ).code.trim();
+
               return {
-                code: `export default () => cumcord.patcher.injectCSS(${JSON.stringify(minifiedCSS)});`,
-                map: { mappings: "" }
+                code: `export default () => cumcord.patcher.injectCSS(${JSON.stringify(
+                  minifiedCSS
+                )});`,
+                map: { mappings: "" },
               };
             }
+
+            return null;
           },
           resolveId(source) {
             if (source.startsWith("@cumcord")) {
-              importObj[source] = ("cumcord" + source.split("@cumcord")[1].replaceAll("/", "."));
+              importObj[source] =
+                "cumcord" + source.split("@cumcord")[1].replaceAll("/", ".");
+            } else if (source.endsWith(":static")) {
+              return source;
+            }
+
+            return null;
+          },
+          async load(id) {
+            if (id.endsWith(":static")) {
+              let code = await fs.readFile(id.slice(0, -":static".length), "utf-8");
+              return {
+                code: `export default ${JSON.stringify(code)}`,
+                map: { mappings: "" },
+              };
             }
 
             return null;
@@ -61,12 +78,12 @@ import { React } from "@cumcord/modules/common";`,
       nodeResolve({ browser: true }),
       commonjs({
         include: "node_modules/**",
-        exclude: "!node_modules/**"
+        exclude: "!node_modules/**",
       }),
       esbuildPlugin({
         minify: true,
-        target: ["es2021"]
-      })
+        target: ["es2021"],
+      }),
     ],
   });
 
@@ -74,7 +91,7 @@ import { React } from "@cumcord/modules/common";`,
     format: "iife",
     compact: true,
     globals: importObj,
-  }
+  };
 
   return {
     async write(outDir) {
@@ -91,7 +108,7 @@ import { React } from "@cumcord/modules/common";`,
       await bundle.close();
       return output;
     },
-    
+
     watchFiles: bundle.watchFiles,
-  }
+  };
 };
