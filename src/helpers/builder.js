@@ -40,7 +40,7 @@ import { React } from "@cumcord/modules/common";`,
                 map: { mappings: "" }
               };
             } else if (id.endsWith(".css")) {
-              let minifiedCSS = (await esbuild.transform(code, {minify: true, loader: "css"})).code;
+              let minifiedCSS = (await esbuild.transform(code, {minify: true, loader: "css"})).code.trim();
               
               return {
                 code: `export default () => cumcord.patcher.injectCSS(${JSON.stringify(minifiedCSS)});`,
