@@ -8,10 +8,11 @@ const esbuild = require("esbuild");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
+const sass = require("sass");
 
 module.exports = async function buildPlugin(
   inputFile = "cumcord_manifest.json",
-  dev = false,
+  dev = false
 ) {
   await fs.access(inputFile).catch(() => {
     throw new Error(`${inputFile} does not exist`);
@@ -48,6 +49,17 @@ import { React } from "@cumcord/modules/common";`,
                 )});`,
                 map: { mappings: "" },
               };
+            } else if (id.endsWith(".scss") || id.endsWith(".sass")) {
+              const built = sass.renderSync({ file: id }).css.toString();
+              const minified = (
+                await esbuild.transform(built, { minify: true, loader: "css" })
+              ).code.trim();
+
+              return {
+                code: `export default () => cumcord.patcher.injectCSS(${JSON.stringify(
+                  minified
+                )});`,
+              };
             }
 
             return null;
@@ -64,7 +76,10 @@ import { React } from "@cumcord/modules/common";`,
           },
           async load(id) {
             if (id.endsWith(":static")) {
-              let code = await fs.readFile(id.slice(0, -":static".length), "utf-8");
+              let code = await fs.readFile(
+                id.slice(0, -":static".length),
+                "utf-8"
+              );
               return {
                 code: `export default ${JSON.stringify(code)}`,
                 map: { mappings: "" },
