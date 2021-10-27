@@ -10,7 +10,8 @@ const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
 
 module.exports = async function buildPlugin(
-  inputFile = "cumcord_manifest.json"
+  inputFile = "cumcord_manifest.json",
+  dev = false,
 ) {
   await fs.access(inputFile).catch(() => {
     throw new Error(`${inputFile} does not exist`);
@@ -81,7 +82,7 @@ import { React } from "@cumcord/modules/common";`,
         exclude: "!node_modules/**",
       }),
       esbuildPlugin({
-        minify: true,
+        minify: !dev,
         target: ["es2021"],
       }),
     ],
@@ -89,7 +90,7 @@ import { React } from "@cumcord/modules/common";`,
 
   let outputOptions = {
     format: "iife",
-    compact: true,
+    compact: !dev,
     globals: importObj,
   };
 
