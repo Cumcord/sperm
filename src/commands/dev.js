@@ -3,34 +3,37 @@ const ws = require("ws");
 const chalk = require("chalk");
 const chokidar = require("chokidar");
 const fs = require("fs").promises;
-const path = require("path");
 
 // a function that finds an open websocket port using a port range
 async function findPort(start, increment) {
   let port = start - 1;
-  let promiseList = [];
   while (port < start + increment) {
     port += 1;
 
-    promiseList.push(new Promise((resolve, reject) => {
+    let val = await new Promise((resolve) => {
       let socket = new ws(`ws://127.0.0.1:${port}/cumcord`);
-
-      socket.on("error", () => {
-        socket.close();
-        resolve(false);
-      });
-
       socket.on("open", () => {
         socket.close();
         resolve(port);
-      })
-    }))
+      });
 
-    for (let promise of promiseList) {
-      let resolution = await promise;
-      if (resolution != false) {
-        return resolution;
-      }
+      socket.on("error", () => {
+        resolve(false);
+      })
+
+      socket.on("close", () => {
+        resolve(false);
+      })
+
+      setInterval(() => {
+        resolve(false);
+      }, 50);
+    });
+
+    if (val) {
+      return val
+    } else if (port == start + increment) {
+      throw new Error("Could not find an open port.");
     }
   }
 }
@@ -42,9 +45,8 @@ async function dev(args) {
   } catch {
     throw new Error(`${args.manifest} is not valid json`);
   }
-  
-  let watchFiles;
-  const port = (await findPort(args.port, 10));
+
+  const port = await findPort(args.port, 10);
 
   if (!port) {
     throw new Error("Could not find an open port.");
@@ -54,28 +56,31 @@ async function dev(args) {
   const client = new ws(server);
 
   function sendToClient(code) {
-    client.send(JSON.stringify({
-      action: "INSTALL_PLUGIN_DEV",
-      code
-    }));
+    client.send(
+      JSON.stringify({
+        action: "INSTALL_PLUGIN_DEV",
+        code,
+      })
+    );
   }
 
-  console.log(chalk`{green [CONNECT]} {white Connected to development websocket at} {yellow ${server}}{white .}`);
+  console.log(
+    chalk`{green [CONNECT]} {white Connected to development websocket at} {yellow ${server}}{white .}`
+  );
 
   client.on("open", async () => {
-    console.log(chalk`{green [BUILD]} {white Building plugin...}`)
+    console.log(chalk`{green [BUILD]} {white Building plugin...}`);
     let data = await getBuild();
 
     if (data) {
       console.log(chalk`{green [SEND]} {white Sending plugin to client...}`);
       sendToClient(data[0].code);
     }
-  })
+  });
 
   await fs.access(args.manifest).catch(() => {
     throw new Error(`${args.manifest} does not exist`);
   });
-
 
   async function getBuild() {
     try {
@@ -89,7 +94,9 @@ async function dev(args) {
   // cleanup on exit
   process.on("SIGINT", () => {
     client.close();
-    console.log(chalk`{red [DISCONNECT]} {white Disconnected from development websocket.}`);
+    console.log(
+      chalk`{red [DISCONNECT]} {white Disconnected from development websocket.}`
+    );
     process.exit();
   });
 
@@ -101,14 +108,16 @@ async function dev(args) {
 
     console.log(chalk`{green [SEND]} {white Sending plugin to client...}`);
     sendToClient(data[0].code);
-  })
+  });
 
   client.on("message", (message) => {
     let data;
     try {
       data = JSON.parse(message);
     } catch {
-      console.log(chalk`{red [ERROR]} {white Could not parse message from development websocket.}`);
+      console.log(
+        chalk`{red [ERROR]} {white Could not parse message from development websocket.}`
+      );
       return;
     }
 
@@ -116,7 +125,7 @@ async function dev(args) {
       console.log(chalk`{red [ERROR]} {white ${data.message}}`);
       return;
     }
-  })
+  });
 }
 
 module.exports = dev;
