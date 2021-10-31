@@ -3,6 +3,26 @@ const ws = require("ws");
 const chalk = require("chalk");
 const chokidar = require("chokidar");
 const fs = require("fs").promises;
+const http = require("http");
+
+function initializeServer() {
+  let pluginData = "";
+
+  const server = http.createServer((_, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.writeHead(200);
+    res.end(pluginData);
+  });
+
+  server.listen(42069, "127.0.0.1");
+
+  return {
+    httpserver: server,
+    update(data) {
+      pluginData = data;
+    },
+  };
+}
 
 // a function that finds an open websocket port using a port range
 async function findPort(start, increment) {
@@ -19,11 +39,11 @@ async function findPort(start, increment) {
 
       socket.on("error", () => {
         resolve(false);
-      })
+      });
 
       socket.on("close", () => {
         resolve(false);
-      })
+      });
 
       setInterval(() => {
         resolve(false);
@@ -31,7 +51,7 @@ async function findPort(start, increment) {
     });
 
     if (val) {
-      return val
+      return val;
     } else if (port == start + increment) {
       throw new Error("Could not find an open port.");
     }
@@ -52,14 +72,15 @@ async function dev(args) {
     throw new Error("Could not find an open port.");
   }
 
+  let { httpserver, update } = initializeServer();
   let server = `ws://127.0.0.1:${port}/cumcord`;
   const client = new ws(server);
 
   function sendToClient(code) {
+    update(code);
     client.send(
       JSON.stringify({
-        action: "INSTALL_PLUGIN_DEV",
-        code,
+        action: "UPDATE_PLUGIN_DEV",
       })
     );
   }
@@ -93,6 +114,7 @@ async function dev(args) {
 
   // cleanup on exit
   process.on("SIGINT", () => {
+    httpserver.close();
     client.close();
     console.log(
       chalk`{red [DISCONNECT]} {white Disconnected from development websocket.}`
