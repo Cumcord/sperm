@@ -65,7 +65,15 @@ import { React } from "@cumcord/modules/common";`,
             return null;
           },
           resolveId(source) {
-            if (source.startsWith("@cumcord")) {
+            if (source.startsWith("@cumcord/pluginData")) {
+              const split = source.split("@cumcord/pluginData");
+              if (split[1] === "") {
+                importObj[source] = "__CUMCORD_PLUGIN_DATA"
+              } else {
+                split.shift();
+                importObj[source] = `__CUMCORD_PLUGIN_DATA${split.join("").replaceAll("/", ".")}`
+              }
+            } else if (source.startsWith("@cumcord")) {
               importObj[source] =
                 "cumcord" + source.split("@cumcord")[1].replaceAll("/", ".");
             } else if (source.endsWith(":static")) {
