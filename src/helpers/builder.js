@@ -3,7 +3,7 @@ const rollup = require("rollup");
 const path = require("path");
 
 // rollup plugins
-const esbuildPlugin = require("rollup-plugin-esbuild");
+const esbuildPlugin = require("rollup-plugin-esbuild").default;
 const esbuild = require("esbuild");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const commonjs = require("@rollup/plugin-commonjs");

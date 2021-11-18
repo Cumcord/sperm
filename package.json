@@ -11,15 +11,15 @@
   "dependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
-    "esbuild": "^0.12.26",
-    "inquirer": "^8.1.2",
-    "rollup": "^2.56.3",
-    "rollup-plugin-esbuild": "^4.5.0",
+    "esbuild": "^0.12.29",
+    "inquirer": "^8.2.0",
+    "rollup": "^2.60.0",
+    "rollup-plugin-esbuild": "^4.7.1",
     "sass": "^1.43.4",
-    "ws": "^8.2.2",
-    "yargs": "^17.1.1"
+    "ws": "^8.2.3",
+    "yargs": "^17.2.1"
   }
 }
