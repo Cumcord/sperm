@@ -17,7 +17,13 @@ async function build(args) {
     throw new Error(`${args.manifest} is not valid json`);
   }
   
-  await (await buildPlugin(manifestJson.file)).write(args.outdir);
+  try {
+    await (await buildPlugin(manifestJson.file)).write(args.outdir);
+  } catch (e) {
+    console.log(e.stack)
+    process.exit(1)
+  }
+
   await fs.access(args.outdir).catch(() => fs.mkdir(args.outdir));
 
   let manifestCopy = manifestJson;
