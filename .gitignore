@@ -1,5 +1,3 @@
-syntax: glob
-
 # Logs
 logs
 *.log
