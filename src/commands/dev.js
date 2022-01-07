@@ -3,7 +3,8 @@ const ws = require("ws");
 const chalk = require("chalk");
 const chokidar = require("chokidar");
 const fs = require("fs").promises;
-const { existsSync } = require("fs")
+const path = require("path");
+const { existsSync } = require("fs");
 const http = require("http");
 
 function initializeServer() {
