@@ -1,6 +1,7 @@
 const buildPlugin = require("../helpers/builder.js");
 const path = require("path");
-const fs = require("fs").promises;
+const fs = require("fs/promises");
+const { existsSync } = require("fs")
 const crypto = require("crypto");
 
 async function build(args) {
@@ -16,9 +17,14 @@ async function build(args) {
   } catch {
     throw new Error(`${args.manifest} is not valid json`);
   }
-  
+
+  let spermConfig;
+  if (existsSync(args.config)) {
+    spermConfig = require(path.resolve(args.config))
+  }
+
   try {
-    await (await buildPlugin(manifestJson.file)).write(args.outdir);
+    await (await buildPlugin(manifestJson.file, false, spermConfig)).write(args.outdir);
   } catch (e) {
     console.log(e.stack)
     process.exit(1)

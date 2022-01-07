@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs');
-const inquirer = require('inquirer');
-
 // require commands
 const init = require('./commands/init');
 const build = require('./commands/build');
@@ -12,10 +10,8 @@ const gensite = require('./commands/gensite');
 const argumentParser = yargs
   .scriptName('sperm')
   .usage('$0 <cmd> [args]')
-  .help()
   .alias('h', 'help')
-  .strict()
-  .demand(1);
+  .showHelpOnFail(false)
 
 // init command
 argumentParser.command(
@@ -90,6 +86,12 @@ argumentParser.command(
       type: 'string',
       default: 'dist',
     });
+
+    yargs.option('config', {
+      type: 'string',
+      default: 'sperm.config.js',
+      describe: 'the path to a sperm config file',
+    })
   },
   build,
 );
@@ -110,6 +112,11 @@ argumentParser.command(
       default: 6463,
       describe: 'the port to connect to',
     });
+    yargs.option('config', {
+      type: 'string',
+      default: 'sperm.config.js',
+      describe: 'the path to a sperm config file',
+    })
   },
   dev,
 );
@@ -134,4 +141,8 @@ argumentParser.command(
   gensite,
 );
 
-argumentParser.argv;
+argumentParser.parse();
+
+if (argumentParser.argv._.length === 0) {
+  argumentParser.showHelp();
+}

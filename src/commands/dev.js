@@ -66,6 +66,11 @@ async function dev(args) {
     throw new Error(`${args.manifest} is not valid json`);
   }
 
+  let spermConfig;
+  if (existsSync(args.config)) {
+    spermConfig = require(path.resolve(args.config))
+  }
+
   const port = await findPort(args.port, 10);
 
   if (!port) {
@@ -105,7 +110,7 @@ async function dev(args) {
 
   async function getBuild() {
     try {
-      return await (await buildPlugin(manifestJson.file, true)).get();
+      return await (await buildPlugin(manifestJson.file, true, spermConfig)).get();
     } catch (err) {
       console.log(chalk`{red [ERROR]} {white Failed to rebuild plugin.}`);
       console.log(chalk`{red ${err}}`);

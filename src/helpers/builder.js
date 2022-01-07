@@ -12,8 +12,19 @@ const sass = require("sass");
 
 module.exports = async function buildPlugin(
   inputFile = "cumcord_manifest.json",
-  dev = false
+  dev = false,
+  config 
 ) {
+  
+  if (!config) {
+    config = {
+      rollup: {
+        inPlugins: [],
+        outPlugins: []
+      }
+    }  
+  }
+
   await fs.access(inputFile).catch(() => {
     throw new Error(`${inputFile} does not exist`);
   });
@@ -100,6 +111,7 @@ import { React } from "@cumcord/modules/common";`,
         minify: !dev,
         target: ["es2021"],
       }),
+      ...(config?.rollup?.inPlugins ? config.rollup.inPlugins : [])
     ],
   });
 
@@ -107,6 +119,7 @@ import { React } from "@cumcord/modules/common";`,
     format: "iife",
     compact: !dev,
     globals: importObj,
+    plugins: [...(config?.rollup?.outPlugins ? config.rollup.outPlugins : [])],
   };
 
   return {
