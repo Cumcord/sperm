@@ -1,6 +1,6 @@
 {
   "name": "sperm",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "A CLI helper for Cumcord.",
   "main": "src/index.js",
   "repository": "https://hg.sr.ht/~creatable/sperm",
