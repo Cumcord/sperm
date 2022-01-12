@@ -1,11 +1,7 @@
 #!/usr/bin/env node
 
-const yargs = require('yargs');
 // require commands
-const init = require('./commands/init');
-const build = require('./commands/build');
-const dev = require('./commands/dev');
-const gensite = require('./commands/gensite');
+const yargs = require('yargs');
 
 const argumentParser = yargs
   .scriptName('sperm')
@@ -65,7 +61,7 @@ argumentParser.command(
     });
   },
   (args) => {
-    return init(args);
+    return require('./commands/init')(args);
   },
 );
 
@@ -87,13 +83,22 @@ argumentParser.command(
       default: 'dist',
     });
 
-    yargs.option('config', {
+    yargs.option('c', {
+      alias: 'config',
       type: 'string',
       default: 'sperm.config.js',
       describe: 'the path to a sperm config file',
     })
+
+    yargs.option('esbuild', {
+      type: 'boolean',
+      default: false,
+      describe: '(experimental) whether to use esbuild to bundle the plugin',
+    })
   },
-  build,
+  (args) => {
+    return require('./commands/build')(args);
+  },
 );
 
 // dev command
@@ -112,13 +117,21 @@ argumentParser.command(
       default: 6463,
       describe: 'the port to connect to',
     });
-    yargs.option('config', {
+    yargs.option('c', {
+      alias: 'config',
       type: 'string',
       default: 'sperm.config.js',
       describe: 'the path to a sperm config file',
-    })
+    });
+    yargs.option('esbuild', {
+      type: 'boolean',
+      default: false,
+      describe: '(experimental) whether to use esbuild to bundle the plugin',
+    });
   },
-  dev,
+  (args) => {
+    return require('./commands/dev')(args);
+  },
 );
 
 // sitegen
@@ -138,7 +151,9 @@ argumentParser.command(
       default: 'dist',
     });
   },
-  gensite,
+  (args) => {
+    return require('./commands/gensite')(args);
+  },
 );
 
 argumentParser.parse();

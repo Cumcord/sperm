@@ -112,7 +112,7 @@ async function dev(args) {
 
   async function getBuild() {
     try {
-      return await (await buildPlugin(manifestJson.file, true, spermConfig)).get();
+      return await (await buildPlugin(manifestJson.file, true, spermConfig, args.esbuild)).get();
     } catch (err) {
       console.log(chalk`{red [ERROR]} {white Failed to rebuild plugin.}`);
       console.log(chalk`{red ${err}}`);

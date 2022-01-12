@@ -10,7 +10,7 @@ specifiers:
   inquirer: ^8.2.0
   rollup: ^2.63.0
   rollup-plugin-esbuild: ^4.8.2
-  sass: ^1.46.0
+  sass: ^1.47.0
   ws: ^8.4.0
   yargs: ^17.3.1
 
@@ -24,7 +24,7 @@ dependencies:
   inquirer: 8.2.0
   rollup: 2.63.0
   rollup-plugin-esbuild: 4.8.2_esbuild@0.12.29+rollup@2.63.0
-  sass: 1.46.0
+  sass: 1.47.0
   ws: 8.4.0
   yargs: 17.3.1
 
@@ -427,7 +427,7 @@ packages:
       mute-stream: 0.0.8
       ora: 5.4.1
       run-async: 2.4.1
-      rxjs: 7.5.1
+      rxjs: 7.5.2
       string-width: 4.2.3
       strip-ansi: 6.0.1
       through: 2.3.8
@@ -655,8 +655,8 @@ packages:
     engines: {node: '>=0.12.0'}
     dev: false
 
-  /rxjs/7.5.1:
-    resolution: {integrity: sha512-KExVEeZWxMZnZhUZtsJcFwz8IvPvgu4G2Z2QyqjZQzUGr32KDYuSxrEYO4w3tFFNbfLozcrKUTvTPi+E9ywJkQ==}
+  /rxjs/7.5.2:
+    resolution: {integrity: sha512-PwDt186XaL3QN5qXj/H9DGyHhP3/RYYgZZwqBv9Tv8rsAaiwFH1IsJJlcgD37J7UW5a6O67qX0KWKS3/pu0m4w==}
     dependencies:
       tslib: 2.3.1
     dev: false
@@ -669,8 +669,8 @@ packages:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
     dev: false
 
-  /sass/1.46.0:
-    resolution: {integrity: sha512-Z4BYTgioAOlMmo4LU3Ky2txR8KR0GRPLXxO38kklaYxgo7qMTgy+mpNN4eKsrXDTFlwS5vdruvazG4cihxHRVQ==}
+  /sass/1.47.0:
+    resolution: {integrity: sha512-GtXwvwgD7/6MLUZPnlA5/8cdRgC9SzT5kAnnJMRmEZQFRE3J56Foswig4NyyyQGsnmNvg6EUM/FP0Pe9Y2zywQ==}
     engines: {node: '>=8.9.0'}
     hasBin: true
     dependencies:

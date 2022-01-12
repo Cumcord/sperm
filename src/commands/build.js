@@ -1,7 +1,8 @@
 const buildPlugin = require("../helpers/builder.js");
 const path = require("path");
-const fs = require("fs/promises");
-const { existsSync } = require("fs")
+let fs = require("fs");
+const { existsSync } = fs;
+fs = fs.promises;
 const crypto = require("crypto");
 
 async function build(args) {
@@ -24,7 +25,7 @@ async function build(args) {
   }
 
   try {
-    await (await buildPlugin(manifestJson.file, false, spermConfig)).write(args.outdir);
+    await (await buildPlugin(manifestJson.file, false, spermConfig, args.esbuild)).write(args.outdir);
   } catch (e) {
     console.log(e.stack)
     process.exit(1)
