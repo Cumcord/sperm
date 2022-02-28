@@ -130,8 +130,8 @@ module.exports = async function buildPlugin(
     ];
   } else {
     rollupConfig.plugins = [
-      ...rollupPlugins,
-      esbuildPlugin(esbuildConfig)
+      esbuildPlugin(esbuildConfig),
+      ...rollupPlugins
     ];
   }
 
