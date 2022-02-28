@@ -49,7 +49,8 @@ module.exports = async function buildPlugin(
           ).code.trim();
 
           return {
-            code: `export default () => cumcord.patcher.injectCSS(${JSON.stringify(
+            code: `import { injectCSS } from "@cumcord/patcher";
+            export default () => injectCSS(${JSON.stringify(
               minifiedCSS
             )});`,
             map: { mappings: "" },
@@ -66,7 +67,8 @@ module.exports = async function buildPlugin(
           ).code.trim();
 
           return {
-            code: `export default () => cumcord.patcher.injectCSS(${JSON.stringify(
+            code: `import { injectCSS } from "@cumcord/patcher";
+            export default () => injectCSS(${JSON.stringify(
               minified
             )});`,
           };
