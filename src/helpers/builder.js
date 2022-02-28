@@ -8,6 +8,8 @@ const esbuild = require("esbuild");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
+const injectPlugin = require("@rollup/plugin-inject")
+
 const sass = require("sass");
 
 module.exports = async function buildPlugin(
@@ -38,13 +40,7 @@ module.exports = async function buildPlugin(
     {
       name: "cumcord-transforms",
       async transform(code, id) {
-        if (id.endsWith(".jsx") || id.endsWith(".tsx")) {
-          return {
-            code: `${code}
-import { React } from "@cumcord/modules/common";`,
-            map: { mappings: "" },
-          };
-        } else if (id.endsWith(".css")) {
+        if (id.endsWith(".css")) {
           let minifiedCSS = (
             await esbuild.transform(code, {
               minify: true,
@@ -58,7 +54,9 @@ import { React } from "@cumcord/modules/common";`,
             )});`,
             map: { mappings: "" },
           };
-        } else if (id.endsWith(".scss") || id.endsWith(".sass")) {
+        }
+        
+        if (id.endsWith(".scss") || id.endsWith(".sass")) {
           const built = sass.renderSync({ file: id }).css.toString();
           const minified = (
             await esbuild.transform(built, {
@@ -98,6 +96,9 @@ import { React } from "@cumcord/modules/common";`,
         return null;
       },
     },
+    injectPlugin({
+      "React": ["@cumcord/modules/common/React", "*"],
+    }),
     json(),
     nodeResolve({ browser: true }),
     commonjs({
