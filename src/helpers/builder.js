@@ -37,6 +37,7 @@ module.exports = async function buildPlugin(
   };
 
   const rollupPlugins = [
+    ...(config?.rollup?.inPlugins ? config.rollup.inPlugins : []),
     {
       name: "cumcord-transforms",
       async transform(code, id) {
@@ -107,7 +108,6 @@ module.exports = async function buildPlugin(
       include: "node_modules/**",
       exclude: "!node_modules/**",
     }),
-    ...(config?.rollup?.inPlugins ? config.rollup.inPlugins : []),
   ];
 
   const rollupConfig = {
