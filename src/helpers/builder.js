@@ -15,8 +15,7 @@ const sass = require("sass");
 module.exports = async function buildPlugin(
   inputFile = "cumcord_manifest.json",
   dev = false,
-  config,
-  useEsbuild = false
+  config
 ) {
   if (!config) {
     config = {
@@ -95,25 +94,14 @@ module.exports = async function buildPlugin(
     input: inputFile,
     onwarn: () => {},
     external: ["react", "react-dom"],
-  };
-
-  const esbuildConfig = {
-    minify: !dev,
-    target: ["es2021"],
-  };
-
-  if (useEsbuild) {
-    rollupConfig.plugins = [
+    plugins: [
       esbuildPlugin({
-        ...esbuildConfig,
-        experimentalBundling: {
-          rollupPlugins,
-        },
+        minify: !dev,
+        target: ["es2021"],
       }),
-    ];
-  } else {
-    rollupConfig.plugins = [esbuildPlugin(esbuildConfig), ...rollupPlugins];
-  }
+      ...rollupPlugins,
+    ],
+  };
 
   const bundle = await rollup.rollup(rollupConfig);
 
