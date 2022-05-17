@@ -85,8 +85,7 @@ module.exports = async function buildPlugin(
     json(),
     nodeResolve({ browser: true }),
     commonjs({
-      include: "node_modules/**",
-      exclude: "!node_modules/**",
+      include: /.*\/node_modules\/.*/,
     }),
   ];
 
