@@ -34,10 +34,14 @@ module.exports = async function buildPlugin(
     ...(config?.rollup?.inPlugins ? config.rollup.inPlugins : []),
     {
       name: "cumcord-transforms",
+      // S/CSS compilation
       async transform(code, id) {
-        if (id.endsWith(".css")) {
-          let minifiedCSS = (
-            await esbuild.transform(code, {
+        const isSass = id.endsWith(".sass") || id.endsWith(".scss")
+        if (id.endsWith(".css") || isSass) {
+          const cssCode = isSass ? sass.compile(id).css : code;
+
+          const minifiedCSS = (
+            await esbuild.transform(cssCode, {
               minify: true,
               loader: "css",
             })
@@ -50,33 +54,17 @@ module.exports = async function buildPlugin(
           };
         }
 
-        if (id.endsWith(".scss") || id.endsWith(".sass")) {
-          const built = sass.compile(id).css;
-          const minified = (
-            await esbuild.transform(built, {
-              minify: true,
-              loader: "css",
-            })
-          ).code.trim();
-
-          return {
-            code: `import { injectCSS } from "@cumcord/patcher";
-            export default () => injectCSS(${JSON.stringify(minified)});`,
-          };
-        }
-
         return null;
       },
+      // pack :static imports as strings
       async load(id) {
-        if (id.endsWith(":static")) {
-          let code = await fs.readFile(id.slice(0, -":static".length), "utf-8");
-          return {
-            code: `export default ${JSON.stringify(code)}`,
-            map: { mappings: "" },
-          };
-        }
+        if (!id.endsWith(":static")) return null;
 
-        return null;
+        const code = await fs.readFile(id.slice(0, -":static".length), "utf-8");
+        return {
+          code: `export default ${JSON.stringify(code)}`,
+          map: {mappings: ""},
+        };
       },
     },
     injectPlugin({
@@ -84,6 +72,7 @@ module.exports = async function buildPlugin(
     }),
     json(),
     nodeResolve({ browser: true }),
+    // allow require() in deps for compat but not in user code - use ESM!!!!
     commonjs({
       include: /.*\/node_modules\/.*/,
     }),
@@ -94,9 +83,12 @@ module.exports = async function buildPlugin(
     onwarn: () => {},
     external: ["react", "react-dom"],
     plugins: [
+      // first esbuild step
+      // bundles without minifying
       esbuildPlugin({
-        minify: !dev,
-        target: ["es2021"],
+        // minifying here breaks IIFEs (???)
+        //minify: !dev,
+        target: "esnext"
       }),
       ...rollupPlugins,
     ],
@@ -117,7 +109,15 @@ module.exports = async function buildPlugin(
 
       return map[id] || null;
     },
-    plugins: [...(config?.rollup?.outPlugins ? config.rollup.outPlugins : [])],
+    plugins: [
+      ...(config?.rollup?.outPlugins ? config.rollup.outPlugins : []),
+      // second esbuild step
+      // minifies as the last step without killing the IIFE
+      esbuildPlugin({
+        target: "esnext",
+        minify: !dev
+      })
+    ],
   };
 
   return {
