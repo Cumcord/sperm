@@ -89,3 +89,6 @@ typings/
 
 # Webstorm / Jetbrains files (yes ik these are meant to be checked in)
 .idea
+
+# Use pnpm
+package-lock.json
