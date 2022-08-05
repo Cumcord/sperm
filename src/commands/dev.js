@@ -70,7 +70,8 @@ export default async function (args) {
 
   let spermConfig;
   if (existsSync(args.config)) {
-    spermConfig = require(path.resolve(args.config))
+    const cfg = await import(path.resolve(args.config));
+    spermConfig = cfg?.default ?? cfg;
   }
 
   const port = await findPort(args.port, 10);
