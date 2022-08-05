@@ -1,5 +1,5 @@
-const inquirer = require("inquirer");
-const fs = require("fs").promises;
+import inquirer from "inquirer";
+import fs from "fs/promises";
 
 async function promptArg(arg, name, message) {
   return await inquirer
@@ -15,7 +15,7 @@ async function promptArg(arg, name, message) {
     });
 }
 
-async function init(args) {
+export default async function (args) {
   let argumentList = {
     name: args.name
       ? args.name
@@ -23,34 +23,34 @@ async function init(args) {
     description: args.description
       ? args.description
       : await promptArg(
-          args.description,
-          "description",
-          "What is your plugin's description?"
-        ),
+        args.description,
+        "description",
+        "What is your plugin's description?"
+      ),
     author: args.author
       ? args.author
       : await promptArg(args.author, "author", "Who created your plugin?"),
     file: args.file
       ? args.file
       : await promptArg(
-          args.file,
-          "file",
-          "What is your plugin's main file path?"
-        ),
+        args.file,
+        "file",
+        "What is your plugin's main file path?"
+      ),
   };
 
   if (!args.license) {
-    license = await promptArg(
+    const license = await promptArg(
       args.license,
       "license",
       "What license does your plugin use?"
     );
 
-    if (license != "" && license.toLowerCase() != "none") {
+    if (license !== "" && license.toLowerCase() !== "none") {
       argumentList.license = license;
     }
   } else {
-    license = args.license;
+    argumentList.license = args.license;
   }
 
   try {
@@ -60,6 +60,4 @@ async function init(args) {
   } catch (e) {
     throw e;
   }
-}
-
-module.exports = init;
+};

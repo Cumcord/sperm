@@ -1,11 +1,10 @@
-const buildPlugin = require("../helpers/builder.js");
-const path = require("path");
-let fs = require("fs");
-const { existsSync } = fs;
-fs = fs.promises;
-const crypto = require("crypto");
+import buildPlugin from "../helpers/builder.js"
+import path from "path"
+import {existsSync} from "fs"
+import fs from "fs/promises"
+import crypto from "crypto";
 
-async function build(args) {
+export default async function (args) {
   console.log("Building plugin...");
 
   await fs.access(args.manifest).catch(() => {
@@ -49,6 +48,4 @@ async function build(args) {
   );
 
   console.log(`Built plugin to ${path.join(args.outdir, "/")}.`);
-}
-
-module.exports = build;
+};

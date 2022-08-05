@@ -1,11 +1,11 @@
-const buildPlugin = require("../helpers/builder.js");
-const ws = require("ws");
-const chalk = require("chalk");
-const chokidar = require("chokidar");
-const fs = require("fs").promises;
-const path = require("path");
-const { existsSync } = require("fs");
-const http = require("http");
+import buildPlugin from "../helpers/builder.js";
+import ws from "ws";
+import chalk from "chalk-template";
+import chokidar from "chokidar";
+import {existsSync} from "fs";
+import fs from "fs/promises";
+import path from "path";
+import http from "http";
 
 function initializeServer() {
   let pluginData = "";
@@ -54,13 +54,13 @@ async function findPort(start, increment) {
 
     if (val) {
       return val;
-    } else if (port == start + increment) {
+    } else if (port === start + increment) {
       throw new Error("Could not find an open port.");
     }
   }
 }
 
-async function dev(args) {
+export default async function (args) {
   let manifestJson;
   try {
     manifestJson = JSON.parse(await fs.readFile(args.manifest, "utf8"));
@@ -79,7 +79,7 @@ async function dev(args) {
     throw new Error("Could not find an open port.");
   }
 
-  let { httpserver, update } = initializeServer();
+  let {httpserver, update} = initializeServer();
   let server = `ws://127.0.0.1:${port}/cumcord`;
   const client = new ws(server);
 
@@ -129,7 +129,7 @@ async function dev(args) {
     process.exit();
   });
 
-  chokidar.watch(".", { ignoreInitial: true }).on("all", async () => {
+  chokidar.watch(".", {ignoreInitial: true}).on("all", async () => {
     console.log(chalk`{blue [REBUILD]} {white Rebuilding plugin...}`);
 
     let data = await getBuild();
@@ -150,11 +150,9 @@ async function dev(args) {
       return;
     }
 
-    if (data.status == "ERROR") {
+    if (data.status === "ERROR") {
       console.log(chalk`{red [ERROR]} {white ${data.message}}`);
       return;
     }
   });
-}
-
-module.exports = dev;
+};

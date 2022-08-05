@@ -1,18 +1,17 @@
-const fs = require("fs").promises;
-const rollup = require("rollup");
-const path = require("path");
+import fs from "fs/promises"
+import * as rollup from "rollup"
+import path from "path"
 
 // rollup plugins
-const esbuildPlugin = require("rollup-plugin-esbuild").default;
-const esbuild = require("esbuild");
-const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
-const commonjs = require("@rollup/plugin-commonjs");
-const json = require("@rollup/plugin-json");
-const injectPlugin = require("@rollup/plugin-inject");
+import esbuildPlugin from "rollup-plugin-esbuild";
+import esbuild from "esbuild";
+import {nodeResolve} from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
+import injectPlugin from "@rollup/plugin-inject";
+import sass from "sass";
 
-const sass = require("sass");
-
-module.exports = async function buildPlugin(
+export default async function buildPlugin(
   inputFile = "cumcord_manifest.json",
   dev = false,
   config

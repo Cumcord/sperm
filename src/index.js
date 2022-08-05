@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-// require commands
-const yargs = require('yargs');
+import process from "process";
+import yargs from "yargs";
 
-const argumentParser = yargs
+const argumentParser = yargs()
   .scriptName('sperm')
   .usage('$0 <cmd> [args]')
   .alias('h', 'help')
@@ -60,9 +60,7 @@ argumentParser.command(
       describe: 'the license of the plugin',
     });
   },
-  (args) => {
-    return require('./commands/init')(args);
-  },
+  async (args) => (await import('./commands/init.js')).default(args),
 );
 
 // build command
@@ -96,9 +94,7 @@ argumentParser.command(
       describe: '(experimental) whether to use esbuild to bundle the plugin',
     })
   },
-  (args) => {
-    return require('./commands/build')(args);
-  },
+  async (args) => (await import('./commands/build.js')).default(args),
 );
 
 // dev command
@@ -129,9 +125,7 @@ argumentParser.command(
       describe: '(experimental) whether to use esbuild to bundle the plugin',
     });
   },
-  (args) => {
-    return require('./commands/dev')(args);
-  },
+  async (args) => (await import('./commands/dev.js')).default(args),
 );
 
 // sitegen
@@ -151,13 +145,9 @@ argumentParser.command(
       default: 'dist',
     });
   },
-  (args) => {
-    return require('./commands/gensite')(args);
-  },
+  async (args) => (await import('./commands/gensite.js')).default(args),
 );
 
-argumentParser.parse();
+argumentParser.parse(process.argv.slice(2));
 
-if (argumentParser.argv._.length === 0) {
-  argumentParser.showHelp();
-}
+if (argumentParser.argv._.length === 0) argumentParser.showHelp();

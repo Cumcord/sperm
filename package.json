@@ -1,6 +1,6 @@
 {
   "name": "sperm",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "A CLI helper for Cumcord.",
   "main": "src/index.js",
   "repository": "https://git.sr.ht/~creatable/sperm",
@@ -8,12 +8,13 @@
   "license": "CC0-1.0",
   "private": false,
   "bin": "./src/index.js",
+  "type": "module",
   "dependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-inject": "^4.0.4",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
-    "chalk": "^5.0.1",
+    "chalk-template": "^0.4.0",
     "chokidar": "^3.5.3",
     "esbuild": "^0.14.53",
     "inquirer": "^9.1.0",

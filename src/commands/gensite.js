@@ -1,7 +1,7 @@
-const fs = require('fs').promises;
-const path = require('path');
+import fs from "fs/promises";
+import path from "path";
 
-async function gensite(args) {
+export default async function (args) {
   console.log('Building site...');
 
   await fs.access(args.manifest).catch(() => {
@@ -23,6 +23,4 @@ async function gensite(args) {
   await fs.writeFile(path.join(args.outdir, 'index.html'), html);
 
   console.log(`Wrote static site to ${path.join(args.outdir, '/')}.`);
-}
-
-module.exports = gensite;
+};
