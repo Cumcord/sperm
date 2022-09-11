@@ -2,10 +2,11 @@ import buildPlugin from "../helpers/builder.js";
 import ws from "ws";
 import chalk from "chalk-template";
 import chokidar from "chokidar";
-import {existsSync} from "fs";
+import { existsSync } from "fs";
 import fs from "fs/promises";
 import path from "path";
 import http from "http";
+import url from "url";
 
 function initializeServer() {
   let pluginData = "";
@@ -70,7 +71,7 @@ export default async function (args) {
 
   let spermConfig;
   if (existsSync(args.config)) {
-    const cfg = await import(path.resolve(args.config));
+    const cfg = await import(url.pathToFileURL(path.resolve(args.config)));
     spermConfig = cfg?.default ?? cfg;
   }
 
@@ -80,7 +81,7 @@ export default async function (args) {
     throw new Error("Could not find an open port.");
   }
 
-  let {httpserver, update} = initializeServer();
+  let { httpserver, update } = initializeServer();
   let server = `ws://127.0.0.1:${port}/cumcord`;
   const client = new ws(server);
 
@@ -113,7 +114,9 @@ export default async function (args) {
 
   async function getBuild() {
     try {
-      return await (await buildPlugin(manifestJson.file, true, spermConfig, args.esbuild)).get();
+      return await (
+        await buildPlugin(manifestJson.file, true, spermConfig, args.esbuild)
+      ).get();
     } catch (err) {
       console.log(chalk`{red [ERROR]} {white Failed to rebuild plugin.}`);
       console.log(chalk`{red ${err}}`);
@@ -130,7 +133,7 @@ export default async function (args) {
     process.exit();
   });
 
-  chokidar.watch(".", {ignoreInitial: true}).on("all", async () => {
+  chokidar.watch(".", { ignoreInitial: true }).on("all", async () => {
     console.log(chalk`{blue [REBUILD]} {white Rebuilding plugin...}`);
 
     let data = await getBuild();
@@ -156,4 +159,4 @@ export default async function (args) {
       return;
     }
   });
-};
+}

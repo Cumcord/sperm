@@ -1,8 +1,9 @@
-import buildPlugin from "../helpers/builder.js"
-import path from "path"
-import {existsSync} from "fs"
-import fs from "fs/promises"
+import buildPlugin from "../helpers/builder.js";
+import path from "path";
+import { existsSync } from "fs";
+import fs from "fs/promises";
 import crypto from "crypto";
+import url from "url";
 
 export default async function (args) {
   console.log("Building plugin...");
@@ -20,15 +21,17 @@ export default async function (args) {
 
   let spermConfig;
   if (existsSync(args.config)) {
-    const cfg = await import(path.resolve(args.config));
+    const cfg = await import(url.pathToFileURL(path.resolve(args.config)));
     spermConfig = cfg?.default ?? cfg;
   }
 
   try {
-    await (await buildPlugin(manifestJson.file, false, spermConfig, args.esbuild)).write(args.outdir);
+    await (
+      await buildPlugin(manifestJson.file, false, spermConfig, args.esbuild)
+    ).write(args.outdir);
   } catch (e) {
-    console.log(e.stack)
-    process.exit(1)
+    console.log(e.stack);
+    process.exit(1);
   }
 
   await fs.access(args.outdir).catch(() => fs.mkdir(args.outdir));
@@ -49,4 +52,4 @@ export default async function (args) {
   );
 
   console.log(`Built plugin to ${path.join(args.outdir, "/")}.`);
-};
+}
